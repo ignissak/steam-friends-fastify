@@ -1,3 +1,4 @@
+import cors from '@fastify/cors';
 import { fastifyEnv } from '@fastify/env';
 import fastifyPassport from '@fastify/passport';
 import fastifySecureSession from '@fastify/secure-session';
@@ -9,91 +10,6 @@ import Fastify, {
 import { Strategy as SteamStrategy } from 'passport-steam';
 import { steamLogin, steamLoginReturn } from './routes/auth.routes';
 import { steamRoutes } from './routes/steam.routes';
-
-/* class App {
-
-
-	public fastify;
-
-	constructor() {
-		this.fastify = fastify({ logger: true });
-
-		this.fastify
-			.register(require('@fastify/middie'), {
-				hook: 'onRequest', // default
-			})
-			.after(async () => {
-				this.middleware();
-				this.routes();
-				await this.start();
-			});
-	}
-
-	private middleware() {
-		this.fastify.register(subsystem);
-
-		this.fastify.register(fastifyEnv, {
-			dotenv: true,
-			data: process.env,
-			confKey: 'config',
-			schema: {
-				type: 'object',
-				required: ['PORT'],
-				properties: {
-					PORT: {
-						type: 'string',
-						default: '3000',
-					},
-				},
-			},
-		});
-
-		console.log(1);
-		console.log(this.fastify.config);
-
-		this.fastify.addHook('onSend', (_request, reply, payload, done) => {
-			if (
-				typeof payload === 'object' &&
-				payload &&
-				payload.hasOwnProperty('success')
-			) {
-				return done(null, payload);
-			}
-			const is_success =
-				reply.statusCode >= 200 && reply.statusCode < 400;
-			return done(null, { success: is_success, data: payload });
-		});
-
-		async function subsystem(fastify: any, _opts: any) {
-			fastify.use(
-				morgan(
-					':remote-addr -> (:method) :url :status - :response-time ms',
-					debugStream,
-				),
-			);
-			fastify.use(
-				morgan(
-					':remote-addr -> (:method) :url :status - :response-time ms',
-					winstonStream,
-				),
-			);
-		}
-	}
-
-	private async routes() {}
-
-	public async start() {
-		try {
-			console.log(this.fastify.config)
-			await this.fastify.listen({ port: this.fastify.config.PORT });
-		} catch (e) {
-			this.fastify.log.error(e);
-			process.exit(1);
-		}
-	}
-}
-
-const app = new App(); */
 
 export function isAuthenticated(
 	request: FastifyRequest,
@@ -135,6 +51,7 @@ async function routes(fastify: FastifyInstance) {
 	);
 
 	fastify.get('/', {}, async (request, reply) => {
+		reply.header('access-control-allow-credentials', true);
 		if (request.isAuthenticated()) {
 			return reply.send({
 				success: true,
@@ -142,7 +59,7 @@ async function routes(fastify: FastifyInstance) {
 				user: request.user,
 			});
 		}
-		return reply.redirect('/auth/steam');
+		return reply.status(401).send({ redirect: '/auth/steam' });
 	});
 
 	await fastify.register(steamRoutes);
@@ -152,6 +69,12 @@ async function build() {
 	const fastify = Fastify({
 		logger: true,
 		disableRequestLogging: true,
+	});
+
+	await fastify.register(cors, {
+		origin: ['http://localhost:5173', 'https://steam.bordas.sk'],
+		credentials: true,
+		methods: ['GET'],
 	});
 
 	await fastify.register(require('@fastify/middie'), {
@@ -202,9 +125,10 @@ async function build() {
 
 	await fastify.register(fastifySecureSession, {
 		sessionName: 'session',
-		cookieName: 'session',
+		cookieName: 'steam-session',
 		cookie: {
 			path: '/',
+			domain: '.steam.bordas.sk',
 			secure: true,
 		},
 		key: Buffer.from(fastify['config'].JWT_SECRET),
