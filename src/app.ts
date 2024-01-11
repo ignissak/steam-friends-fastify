@@ -95,7 +95,11 @@ import { steamRoutes } from './routes/steam.routes';
 
 const app = new App(); */
 
-export function isAuthenticated(request: FastifyRequest, reply: FastifyReply, done) {
+export function isAuthenticated(
+	request: FastifyRequest,
+	reply: FastifyReply,
+	done,
+) {
 	if (request.isAuthenticated()) {
 		return done();
 	} else {
@@ -129,6 +133,17 @@ async function routes(fastify: FastifyInstance) {
 		},
 		steamLoginReturn,
 	);
+
+	fastify.get('/', {}, async (request, reply) => {
+		if (request.isAuthenticated()) {
+			return reply.send({
+				success: true,
+				message: 'You are authenticated',
+				user: request.user,
+			});
+		}
+		return reply.redirect('/auth/steam');
+	});
 
 	await fastify.register(steamRoutes);
 }
