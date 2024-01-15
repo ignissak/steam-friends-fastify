@@ -1,7 +1,27 @@
+import fastifyPassport from '@fastify/passport';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-export function steamLogin() {}
+export const authRoutes = (fastify, _opts, done) => {
+	fastify.get(
+		'/auth/steam',
+		{ preValidation: fastifyPassport.authenticate('steam') },
+		steamLogin,
+	);
+	fastify.get(
+		'/auth/steam/return',
+		{ preValidation: fastifyPassport.authenticate('steam') },
+		steamLoginReturn,
+	);
 
-export function steamLoginReturn(request: FastifyRequest, reply: FastifyReply & { cookie: Function }) {
-	return reply.status(200).send({ success: true, data: request['user'] });
-}
+	function steamLogin() {}
+
+	function steamLoginReturn(
+		_request: FastifyRequest,
+		reply: FastifyReply & { cookie: Function },
+	) {
+		console.log(fastify.config.REDIRECT_URL);
+		return reply.redirect(fastify.config.REDIRECT_URL);
+	}
+
+	done();
+};

@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc --build",
 		"start": "node dist/app.js",
-		"dev": "ts-node-dev ./src/app.ts",
+		"dev": "SET NODE_ENV=development & ts-node-dev ./src/app.ts",
 		"lint": "eslint --ignore-path .eslintignore --ext .js,.ts",
 		"format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
 	},
@@ -19,6 +19,7 @@
 		"@fastify/env": "^4.3.0",
 		"@fastify/middie": "^8.3.0",
 		"@fastify/passport": "^2.4.0",
+		"@fastify/redis": "^6.1.1",
 		"@fastify/secure-session": "^7.1.0",
 		"@types/debug": "^4.1.12",
 		"@types/morgan": "^1.9.9",

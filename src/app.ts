@@ -8,7 +8,7 @@ import Fastify, {
 	FastifyRequest,
 } from 'fastify';
 import { Strategy as SteamStrategy } from 'passport-steam';
-import { steamLogin, steamLoginReturn } from './routes/auth.routes';
+import { authRoutes } from './routes/auth.routes';
 import { steamRoutes } from './routes/steam.routes';
 
 export function isAuthenticated(
@@ -23,33 +23,6 @@ export function isAuthenticated(
 	}
 }
 async function routes(fastify: FastifyInstance) {
-	fastify.get(
-		'/auth/steam',
-		{
-			preValidation: fastifyPassport.authenticate('steam'),
-			schema: {
-				params: {
-					type: 'object',
-					properties: {
-						id: { type: 'string', minLength: 1 },
-					},
-					required: ['id'],
-				},
-			},
-		},
-		steamLogin,
-	);
-
-	fastify.get(
-		'/auth/steam/return',
-		{
-			preValidation: fastifyPassport.authenticate('steam', {
-				failureRedirect: '/',
-			}),
-		},
-		steamLoginReturn,
-	);
-
 	fastify.get('/', {}, async (request, reply) => {
 		reply.header('access-control-allow-credentials', true);
 		if (request.isAuthenticated()) {
@@ -63,6 +36,7 @@ async function routes(fastify: FastifyInstance) {
 	});
 
 	await fastify.register(steamRoutes);
+	await fastify.register(authRoutes);
 }
 
 async function build() {
@@ -87,9 +61,16 @@ async function build() {
 		parseOptions: {}, // options for parsing cookies
 	});
 
+	const dotenvPath =
+		process.env.NODE_ENV === 'production' ? '.env' : '.env.dev';
+
+	console.debug(`Loading config from ${dotenvPath}`);
+
 	await fastify.register(fastifyEnv, {
-		dotenv: true,
-		data: process.env,
+		dotenv: {
+			path: dotenvPath,
+			debug: true,
+		},
 		confKey: 'config',
 		schema: {
 			type: 'object',
@@ -119,17 +100,34 @@ async function build() {
 					type: 'boolean',
 					default: false,
 				},
+				COOKIE_DOMAIN: {
+					type: 'string',
+					default: 'localhost',
+				},
+				REDIRECT_URL: {
+					type: 'string',
+					default: 'http://localhost:5173/login',
+				},
+				REDIS_URL: {
+					type: 'string',
+					default: 'redis://localhost:6379',
+				}
 			},
 		},
 	});
+
+	await fastify.register(require('@fastify/redis'), {
+		url: fastify['config'].REDIS_URL,
+	})
 
 	await fastify.register(fastifySecureSession, {
 		sessionName: 'session',
 		cookieName: 'steam-session',
 		cookie: {
 			path: '/',
-			domain: '.steam.bordas.sk',
+			domain: fastify['config'].COOKIE_DOMAIN,
 			secure: true,
+			sameSite: 'none',
 		},
 		key: Buffer.from(fastify['config'].JWT_SECRET),
 	});
