@@ -14,15 +14,35 @@ export const steamRoutes = (fastify, _opts, done) => {
 		{ preValidation: isAuthenticated },
 		getOwnedGames,
 	);
-	fastify.get(
-		'/steam/games/:appids',
-		{ preValidation: isAuthenticated },
+	fastify.post(
+		'/steam/games',
+		{
+			preValidation: isAuthenticated,
+			schema: {
+				body: {
+					type: 'object',
+					properties: {
+						appIds: {
+							type: 'array',
+							items: {
+								type: 'string',
+							},
+						},
+					},
+					required: ['appIds'],
+				},
+			},
+		},
 		getGamesInfo,
 	);
 
 	// TODO: Endpoint for resetting cache
 
 	const { redis } = fastify;
+	const fs = require('fs');
+	const appIdsFile = './src/appids.json';
+	const allAppIds = JSON.parse(fs.readFileSync(appIdsFile, 'utf-8')).applist
+		.apps;
 
 	async function getById(request: FastifyRequest, reply: FastifyReply) {
 		const id = request.params!!['id'];
@@ -206,10 +226,12 @@ export const steamRoutes = (fastify, _opts, done) => {
 
 	async function getGamesInfo(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			const appIds = request.params!!['appids'].split(',');
+			const appIds = (request.body as any)['appIds'];
 			const finalData = {};
+			let count = 0;
+			let skipped = 0;
 			for (const appId of appIds) {
-				try {
+				/* try {
 					const cached = await redis.exists(
 						`/steam/games/${appId}`,
 					)!!;
@@ -217,50 +239,44 @@ export const steamRoutes = (fastify, _opts, done) => {
 						finalData[appId] = JSON.parse(
 							await redis.get(`/steam/games/${appId}`),
 						);
+						count++;
+						continue;
 					}
-					continue;
 				} catch (e) {
-					console.error(e);
-				}
-				const response = await axios.get(
-					`https://store.steampowered.com/api/appdetails?appids=${appId}`,
-				);
-				const game = response.data;
-				if (!game[appId].success) {
-					return reply.status(404).send({
-						success: false,
-						message: 'Game not found',
-						appId: appId,
-					});
-				}
-				finalData[appId] = game[appId].data;
-				try {
-					redis.set(
-						`/steam/games/${appId}`,
-						JSON.stringify(game[appId].data),
-					); // 1 day
-					redis.expire(`/steam/games/${appId}`, 86400);
-				} catch (e) {
-					console.error(e);
+					console.log(appId);
+					fastify.log.error(e);
+				} */
+				const game = allAppIds.find(game => game.appid == appId);
+				if (!game) {
+					finalData[appId] = null;
+					skipped++;
+				} else {
+					finalData[appId] = game;
+					count++;
+
+					/* try {
+						redis.set(
+							`/steam/games/${appId}`,
+							JSON.stringify(game),
+						); // 1 day
+						redis.expire(`/steam/games/${appId}`, 86400);
+					} catch (e) {
+						console.error(e);
+					} */
 				}
 			}
 			return reply.status(200).send({
 				success: true,
+				count,
+				skipped,
 				data: finalData,
 			});
 		} catch (e) {
-			console.log(e);
-			if ((e as any).response.status === 429) {
-				return reply.status(429).send({
-					success: false,
-					message: 'Rate limited',
-				});
-			} else {
-				return reply.status(500).send({
-					success: false,
-					message: 'Internal server error',
-				});
-			}
+			fastify.log.error(e);
+			return reply.status(500).send({
+				success: false,
+				message: 'Internal server error',
+			});
 		}
 	}
 
