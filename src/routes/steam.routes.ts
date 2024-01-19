@@ -197,6 +197,14 @@ export const steamRoutes = (fastify, _opts, done) => {
 				`https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${fastify['config'].STEAM_API_KEY}&steamid=${id}&relationship=friend`,
 			);
 			const games = response.data.response.games;
+			for (let i = 0; i < games.length; i++) {
+				const game = games[i];
+				const appid = game.appid;
+				const app = allAppIds.find(app => app.appid == appid);
+				if (app) {
+					games[i] = { ...game, ...app };
+				}
+			}
 			const count = games.length;
 			try {
 				redis.set(`/steam/${id}/games`, JSON.stringify(games)); // 1 hour
