@@ -263,7 +263,6 @@ export const steamRoutes = (fastify, _opts, done) => {
 					} else {
 						finalData[appId] = game;
 						count++;
-
 					}
 				}
 				return reply.status(200).send({
@@ -289,9 +288,15 @@ export const steamRoutes = (fastify, _opts, done) => {
 						`/steam/games/${appId}`,
 					)!!;
 					if (cached) {
-						finalData[appId] = JSON.parse(
-							await redis.get(`/steam/games/${appId}`),
+						const cachedGame = await redis.get(
+							`/steam/games/${appId}`,
 						);
+						if (cachedGame.length === 0 || cachedGame === 'null') {
+							finalData[appId] = null;
+							skipped++;
+							continue;
+						}
+						finalData[appId] = JSON.parse(cachedGame);
 						count++;
 						continue;
 					}
