@@ -23,7 +23,7 @@ export function isAuthenticated(
 	}
 }
 async function routes(fastify: FastifyInstance) {
-	fastify.get('/api', {}, async (request, reply) => {
+	fastify.get('/', {}, async (request, reply) => {
 		reply.header('access-control-allow-credentials', true);
 		if (request.isAuthenticated()) {
 			return reply.send({
