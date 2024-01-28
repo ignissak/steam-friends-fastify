@@ -4,7 +4,7 @@ services:
     image: redis:latest
     restart: always
     ports:
-    - 6379:6379
+    - 36231:36231
     command: redis-server --log-level warning 
     volumes:
     - cache:/data
