@@ -35,8 +35,8 @@ async function routes(fastify: FastifyInstance) {
 		return reply.status(401).send({ redirect: '/auth/steam' });
 	});
 
-	await fastify.register(steamRoutes);
-	await fastify.register(authRoutes);
+	await fastify.register(steamRoutes, { prefix: '/api' });
+	await fastify.register(authRoutes, { prefix: '/api' });
 }
 
 async function build() {
@@ -175,8 +175,11 @@ let app;
 build()
 	.then(fastify => {
 		app = fastify;
-		const prod = process.env.NODE_ENV === 'production'
-		fastify.listen({ port: fastify['config'].PORT, host: prod ? '0.0.0.0' : '127.0.0.1' });
+		const prod = process.env.NODE_ENV === 'production';
+		fastify.listen({
+			port: fastify['config'].PORT,
+			host: prod ? '0.0.0.0' : '127.0.0.1',
+		});
 		fastify.log.info(`Server listening on port ${fastify['config'].PORT}`);
 	})
 	.catch(console.error);

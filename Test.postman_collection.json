@@ -28,13 +28,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/steam/76561198054518196",
+					"raw": "http://localhost:3000/api/steam/76561198054518196",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
+						"api",
 						"steam",
 						"76561198054518196"
 					]
@@ -104,13 +105,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/steam/76561198100361979/friends",
+					"raw": "http://localhost:3000/api/steam/76561198100361979/friends",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
+						"api",
 						"steam",
 						"76561198100361979",
 						"friends"
@@ -161,13 +163,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/steam/76561198100361979/games",
+					"raw": "http://localhost:3000/api/steam/76561198100361979/games",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
+						"api",
 						"steam",
 						"76561198100361979",
 						"games"
@@ -183,62 +186,67 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"\r",
-							"pm.test(\"Response status code is 200\", function () {\r",
+							"pm.test('Response status code is 200', function () {\r",
 							"    pm.response.to.have.status(200);\r",
-							"});\r",
+							"})\r",
 							"\r",
-							"\r",
-							"pm.test(\"Response has the required fields\", function () {\r",
+							"pm.test('Response has the required fields', function () {\r",
 							"    const responseData = pm.response.json();\r",
-							"    \r",
 							"    pm.expect(responseData).to.be.an('object');\r",
 							"    pm.expect(responseData).to.have.property('success');\r",
 							"    pm.expect(responseData).to.have.property('data');\r",
-							"});\r",
-							"\r",
+							"})\r",
 							"\r",
 							"pm.test(\"Data object exists for each game ID\", function () {\r",
+							"    const requestData = JSON.parse(pm.request.body.raw);\r",
 							"    const responseData = pm.response.json();\r",
 							"    \r",
 							"    pm.expect(responseData).to.be.an('object');\r",
 							"    \r",
-							"    const gameIds = [\"80\", \"100\", \"220\", \"1966720\"];\r",
+							"    const gameIds = requestData.appIds;\r",
 							"    gameIds.forEach(function(gameId) {\r",
 							"        pm.expect(responseData.data[gameId]).to.exist;\r",
 							"    });\r",
 							"});\r",
 							"\r",
-							"\r",
-							"pm.test(\"Schema is valid\", function () {\r",
-							"  var schema = {\r",
-							"    type: \"object\",\r",
-							"    properties: {\r",
-							"      success: { type: \"boolean\" },\r",
-							"      count: { type: \"number\" },\r",
-							"      skipped: { type: \"number\" },\r",
-							"      data: {\r",
-							"        type: \"object\",\r",
-							"        patternProperties: {\r",
-							"          \"^[0-9]+$\": {\r",
-							"            type: [\"object\", \"null\"],\r",
-							"            properties: {\r",
-							"              appid: { type: \"number\" },\r",
-							"              name: { type: \"string\" },\r",
-							"            },\r",
-							"            additionalProperties: false,\r",
-							"          },\r",
+							"pm.test('Schema is valid', function () {\r",
+							"    var schema = {\r",
+							"        type: 'object',\r",
+							"        properties: {\r",
+							"            success: { type: 'boolean' },\r",
+							"            count: { type: 'number' },\r",
+							"            skipped: { type: 'number' },\r",
+							"            data: {\r",
+							"                type: 'object',\r",
+							"                patternProperties: {\r",
+							"                    '^[0-9]+$': {\r",
+							"                        type: [\r",
+							"                            'object',\r",
+							"                            'null'\r",
+							"                        ],\r",
+							"                        properties: {\r",
+							"                            appid: { type: 'number' },\r",
+							"                            name: { type: 'string' }\r",
+							"                        },\r",
+							"                        additionalProperties: true\r",
+							"                    }\r",
+							"                },\r",
+							"                additionalProperties: false\r",
+							"            }\r",
 							"        },\r",
-							"        additionalProperties: false,\r",
-							"      },\r",
-							"    },\r",
-							"    required: [\"success\", \"count\", \"skipped\", \"data\"],\r",
-							"    additionalProperties: false,\r",
-							"  };\r",
+							"        required: [\r",
+							"            'success',\r",
+							"            'count',\r",
+							"            'skipped',\r",
+							"            'data'\r",
+							"        ],\r",
+							"        additionalProperties: false\r",
+							"    };\r",
+							"    var response = pm.response.json();\r",
+							"    pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+							"})\r",
 							"\r",
-							"  var response = pm.response.json();\r",
-							"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
-							"});"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -249,7 +257,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"appIds\": [\r\n        10, 80, 100, 220, 320, 340, 360, 380, 400, 420, 1250, 35420, 550, 21130, 55100, 55150, 3830, 202200, 67370, 204120, 201700, 207610, 12750, 218640, 1930, 214510, 11020, 218230, 1083500, 230410, 224260, 246280, 225260, 221040, 210770, 222480, 234650, 65930, 242760, 251570, 252490, 700580, 254020, 234670, 261110, 263840, 221100, 267980, 57300, 239200, 273110, 278360, 254700, 246620, 291410, 293180, 303390, 304050, 304930, 227940, 265590, 200110, 272510, 321040, 238320, 730, 304240, 348250, 349480, 21690, 255710, 363970, 371140, 381210, 386360, 858460, 291550, 391720, 397900, 236110, 413150, 287290, 349040, 339340, 427730, 431960, 444090, 596350, 485380, 48000, 273350, 319630, 292030, 524900, 530620, 530700, 311730, 418370, 543870, 544920, 548430, 438740, 576440, 463150, 588430, 597760, 506540, 218620, 677620, 368420, 38400, 466240, 739630, 427460, 504370, 236870, 368230, 795100, 209670, 809960, 813820, 878760, 433850, 439700, 823130, 848450, 728880, 883710, 892970, 222880, 924970, 945360, 638070, 44350, 1144200, 1172470, 1237970, 952060, 952070, 640590, 1382070, 532210, 489520, 1782210, 578080, 1599340, 1966720, 346110, 407530, 2073850, 2289970, 990080, 1693980, 43160\r\n    ]\r\n}",
+					"raw": "{\r\n    \"appIds\": [\r\n        12110\r\n    ],\r\n    \"liveData\": false\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -257,13 +265,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/steam/games",
+					"raw": "http://localhost:3000/api/steam/games",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
+						"api",
 						"steam",
 						"games"
 					]
