@@ -1,11 +1,11 @@
 version: '3'
 services:
   cache:
-    image: redis:latest
+    image: redis:7.2.4-alpine
     restart: always
     ports:
     - 36231:36231
-    command: redis-server --loglevel warning --port 36231
+    command: redis-server --loglevel notice --port 36231
     volumes:
     - cache:/data
   backend:
@@ -16,6 +16,8 @@ services:
       target: build-stage
     ports:
     - 3000:3000
+    depends_on:
+    - cache
 volumes:
   cache:
     driver: local
