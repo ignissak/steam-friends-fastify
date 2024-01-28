@@ -196,6 +196,12 @@ export const steamRoutes = (fastify, _opts, done) => {
 			const response = await axios.get(
 				`https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${fastify['config'].STEAM_API_KEY}&steamid=${id}&relationship=friend`,
 			);
+			if (!response.data.response.games) {
+				return reply.status(404).send({
+					success: false,
+					message: 'Player not found',
+				});
+			}
 			const games = response.data.response.games;
 			for (let i = 0; i < games.length; i++) {
 				const game = games[i];
@@ -218,17 +224,7 @@ export const steamRoutes = (fastify, _opts, done) => {
 				data: games,
 			});
 		} catch (e) {
-			if ((e as any).response.status === 401) {
-				return reply.status(401).send({
-					success: false,
-					message: 'Games list is private',
-				});
-			} else {
-				return reply.status(500).send({
-					success: false,
-					message: 'Internal server error',
-				});
-			}
+			console.error(e);
 		}
 	}
 
