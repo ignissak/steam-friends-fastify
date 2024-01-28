@@ -1,0 +1,10 @@
+version: '3'
+services:
+  backend:
+    image: 'steam-backend'
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build-stage
+    ports:
+    - 3000:3000
