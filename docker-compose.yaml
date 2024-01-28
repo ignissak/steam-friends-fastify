@@ -5,7 +5,7 @@ services:
     restart: always
     ports:
     - 36231:36231
-    command: redis-server --loglevel warning 
+    command: redis-server --loglevel warning --port 36231
     volumes:
     - cache:/data
   backend:

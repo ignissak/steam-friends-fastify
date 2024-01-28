@@ -111,14 +111,17 @@ async function build() {
 				REDIS_URL: {
 					type: 'string',
 					default: 'redis://localhost:6379',
-				}
+				},
 			},
 		},
 	});
 
+	fastify.log.info(
+		`Trying to connect to redis at ${fastify['config'].REDIS_URL}...`,
+	);
 	await fastify.register(require('@fastify/redis'), {
 		url: fastify['config'].REDIS_URL,
-	})
+	});
 
 	await fastify.register(fastifySecureSession, {
 		sessionName: 'session',
