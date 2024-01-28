@@ -32,7 +32,7 @@ async function routes(fastify: FastifyInstance) {
 				user: request.user,
 			});
 		}
-		return reply.status(401).send({ redirect: '/auth/steam' });
+		return reply.status(401).send({ redirect: '/api/auth/steam' });
 	});
 
 	await fastify.register(steamRoutes, { prefix: '/api' });
