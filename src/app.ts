@@ -175,7 +175,8 @@ let app;
 build()
 	.then(fastify => {
 		app = fastify;
-		fastify.listen({ port: fastify['config'].PORT });
+		const prod = process.env.NODE_ENV === 'production'
+		fastify.listen({ port: fastify['config'].PORT, host: prod ? '0.0.0.0' : '127.0.0.1' });
 		fastify.log.info(`Server listening on port ${fastify['config'].PORT}`);
 	})
 	.catch(console.error);
