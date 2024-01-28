@@ -24,6 +24,7 @@ export function isAuthenticated(
 }
 async function routes(fastify: FastifyInstance) {
 	fastify.get('/api/me', {}, async (request, reply) => {
+		console.log(request.query);
 		reply.header('access-control-allow-credentials', true);
 		if (request.isAuthenticated()) {
 			return reply.send({
