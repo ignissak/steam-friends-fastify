@@ -1,5 +1,13 @@
 version: '3'
 services:
+  cache:
+    image: redis:latest
+    restart: always
+    ports:
+    - 6379:6379
+    command: redis-server --log-level warning 
+    volumes:
+    - cache:/data
   backend:
     image: 'steam-backend'
     build:
@@ -8,3 +16,6 @@ services:
       target: build-stage
     ports:
     - 3000:3000
+volumes:
+  cache:
+    driver: local
