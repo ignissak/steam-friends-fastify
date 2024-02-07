@@ -14,9 +14,7 @@
 				"url": {
 					"raw": "http://localhost:3000",
 					"protocol": "http",
-					"host": [
-						"localhost"
-					],
+					"host": ["localhost"],
 					"port": "3000"
 				}
 			},
@@ -30,15 +28,9 @@
 				"url": {
 					"raw": "http://localhost:3000/api/steam/76561198054518196",
 					"protocol": "http",
-					"host": [
-						"localhost"
-					],
+					"host": ["localhost"],
 					"port": "3000",
-					"path": [
-						"api",
-						"steam",
-						"76561198054518196"
-					]
+					"path": ["api", "steam", "76561198054518196"]
 				}
 			},
 			"response": []
@@ -107,16 +99,9 @@
 				"url": {
 					"raw": "http://localhost:3000/api/steam/76561198100361979/friends",
 					"protocol": "http",
-					"host": [
-						"localhost"
-					],
+					"host": ["localhost"],
 					"port": "3000",
-					"path": [
-						"api",
-						"steam",
-						"76561198100361979",
-						"friends"
-					]
+					"path": ["api", "steam", "76561198100361979", "friends"]
 				}
 			},
 			"response": []
@@ -165,16 +150,9 @@
 				"url": {
 					"raw": "http://localhost:3000/api/steam/76561198100361979/games",
 					"protocol": "http",
-					"host": [
-						"localhost"
-					],
+					"host": ["localhost"],
 					"port": "3000",
-					"path": [
-						"api",
-						"steam",
-						"76561198100361979",
-						"games"
-					]
+					"path": ["api", "steam", "76561198100361979", "games"]
 				}
 			},
 			"response": []
@@ -267,15 +245,9 @@
 				"url": {
 					"raw": "http://localhost:3000/api/steam/games",
 					"protocol": "http",
-					"host": [
-						"localhost"
-					],
+					"host": ["localhost"],
 					"port": "3000",
-					"path": [
-						"api",
-						"steam",
-						"games"
-					]
+					"path": ["api", "steam", "games"]
 				}
 			},
 			"response": []
@@ -289,18 +261,14 @@
 			"listen": "prerequest",
 			"script": {
 				"type": "text/javascript",
-				"exec": [
-					""
-				]
+				"exec": [""]
 			}
 		},
 		{
 			"listen": "test",
 			"script": {
 				"type": "text/javascript",
-				"exec": [
-					""
-				]
+				"exec": [""]
 			}
 		}
 	]

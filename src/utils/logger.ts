@@ -1,5 +1,5 @@
 import * as winston from 'winston';
-import moment from "moment";
+import moment from 'moment';
 
 /**
  * Configures the winston logger. There are also file and remote transports available
@@ -8,36 +8,40 @@ const logger = winston.createLogger({
 	transports: [
 		new winston.transports.File({
 			filename: `logs/app.log`,
-			level: "info",
+			level: 'info',
 			handleExceptions: true,
 			maxsize: 5242880, // 5MB
 			maxFiles: 20,
 			format: winston.format.combine(
 				winston.format.printf((info: any) => {
-					return `[${moment().format('DD/MM/YYYY HH:mm:ss')}] [${info.level}]: ${info.message}`;
+					return `[${moment().format('DD/MM/YYYY HH:mm:ss')}] [${
+						info.level
+					}]: ${info.message}`;
 				}),
 			),
 		}),
 		new winston.transports.Console({
-			level: "debug",
+			level: 'debug',
 			handleExceptions: true,
 			format: winston.format.combine(
 				winston.format.colorize(),
 				winston.format.printf((info: any) => {
-					return `[${moment().format('DD/MM/YYYY HH:mm:ss')}] [${info.level}]: ${info.message}`;
+					return `[${moment().format('DD/MM/YYYY HH:mm:ss')}] [${
+						info.level
+					}]: ${info.message}`;
 				}),
 			),
-		})
+		}),
 	],
-	exitOnError: false
+	exitOnError: false,
 });
 
 const stream = (streamFunction: any) => ({
-	'stream': streamFunction
+	stream: streamFunction,
 });
 
 const write = (writeFunction: any) => ({
-	write: (message: string) => writeFunction(message)
+	write: (message: string) => writeFunction(message),
 });
 
 /**
@@ -57,9 +61,10 @@ export const debugStream = stream(write(debug));
 /**
  * Exports a wrapper for all the loggers we use in this configuration
  */
-const format = (scope: string, message: string): string => `[${scope}] ${message}`;
+const format = (scope: string, message: string): string =>
+	`[${scope}] ${message}`;
 
-const parse = (args: any[]) => (args.length > 0) ? args : '';
+const parse = (args: any[]) => (args.length > 0 ? args : '');
 
 export const Logger = (scope: string) => {
 	const scopeDebug = Debug(scope);
@@ -71,10 +76,15 @@ export const Logger = (scope: string) => {
 			}
 			scopeDebug(message, parse(args));
 		},
-		verbose: (message: string, ...args: any[]) => logger.verbose(format(scope, message), parse(args)),
-		silly: (message: string, ...args: any[]) => logger.silly(format(scope, message), parse(args)),
-		info: (message: string, ...args: any[]) => logger.info(format(scope, message), parse(args)),
-		warn: (message: string, ...args: any[]) => logger.warn(format(scope, message), parse(args)),
-		error: (message: string, ...args: any[]) => logger.error(format(scope, message), parse(args))
+		verbose: (message: string, ...args: any[]) =>
+			logger.verbose(format(scope, message), parse(args)),
+		silly: (message: string, ...args: any[]) =>
+			logger.silly(format(scope, message), parse(args)),
+		info: (message: string, ...args: any[]) =>
+			logger.info(format(scope, message), parse(args)),
+		warn: (message: string, ...args: any[]) =>
+			logger.warn(format(scope, message), parse(args)),
+		error: (message: string, ...args: any[]) =>
+			logger.error(format(scope, message), parse(args)),
 	};
 };
