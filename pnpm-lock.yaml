@@ -20,6 +20,9 @@ dependencies:
   '@fastify/passport':
     specifier: ^2.4.0
     version: 2.4.0
+  '@fastify/rate-limit':
+    specifier: ^9.1.0
+    version: 9.1.0
   '@fastify/redis':
     specifier: ^6.1.1
     version: 6.1.1
@@ -228,6 +231,14 @@ packages:
       fastify-plugin: 4.5.1
     dev: false
 
+  /@fastify/rate-limit@9.1.0:
+    resolution: {integrity: sha512-h5dZWCkuZXN0PxwqaFQLxeln8/LNwQwH9popywmDCFdKfgpi4b/HoMH1lluy6P+30CG9yzzpSpwTCIPNB9T1JA==}
+    dependencies:
+      '@lukeed/ms': 2.0.2
+      fastify-plugin: 4.5.1
+      toad-cache: 3.7.0
+    dev: false
+
   /@fastify/redis@6.1.1:
     resolution: {integrity: sha512-NZpHK+d3uJJ+w1iHx5n1woFvrHhhG52XjM9byWvU81KSsQpO0N/OikgQvz83frLV7UD4UQtTUgPvVbLxW0X81w==}
     dependencies:
@@ -281,6 +292,11 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
+    dev: false
+
+  /@lukeed/ms@2.0.2:
+    resolution: {integrity: sha512-9I2Zn6+NJLfaGoz9jN3lpwDgAYvfGeNYdbAIjJOqzs4Tpc+VU3Jqq4IofSUBKajiDS8k9fZIg18/z13mpk1bsA==}
+    engines: {node: '>=8'}
     dev: false
 
   /@nodelib/fs.scandir@2.1.5:

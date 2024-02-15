@@ -19,6 +19,7 @@
 		"@fastify/env": "^4.3.0",
 		"@fastify/middie": "^8.3.0",
 		"@fastify/passport": "^2.4.0",
+		"@fastify/rate-limit": "^9.1.0",
 		"@fastify/redis": "^6.1.1",
 		"@fastify/secure-session": "^7.1.0",
 		"@types/debug": "^4.1.12",

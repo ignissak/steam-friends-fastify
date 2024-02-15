@@ -166,7 +166,15 @@ async function build() {
 		done();
 	});
 
+	await fastify.register(import('@fastify/rate-limit'), {
+		global: true,
+		max: 20, // limit each IP to 100 requests per windowMs
+		timeWindow: '1 minute',
+	});
+	fastify.log.info('Rate limit registered');
+
 	await routes(fastify);
+	fastify.log.info('Routes registered');
 
 	return fastify;
 }

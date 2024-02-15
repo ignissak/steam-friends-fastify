@@ -1,17 +1,45 @@
 import axios from 'axios';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { isAuthenticated } from '../app';
 
-export const steamRoutes = (fastify, _opts, done) => {
-	fastify.get('/steam/:id', { preValidation: isAuthenticated }, getById);
+export const steamRoutes = (fastify: FastifyInstance, _opts, done) => {
+	fastify.get(
+		'/steam/:id',
+		{
+			preValidation: isAuthenticated,
+			config: {
+				rateLimit: {
+					max: 10,
+					timeWindow: '1 minute',
+				},
+			},
+		},
+		getById,
+	);
 	fastify.get(
 		'/steam/:id/friends',
-		{ preValidation: isAuthenticated },
+		{
+			preValidation: isAuthenticated,
+			config: {
+				rateLimit: {
+					max: 10,
+					timeWindow: '1 minute',
+				},
+			},
+		},
 		getFriendList,
 	);
 	fastify.get(
 		'/steam/:id/games',
-		{ preValidation: isAuthenticated },
+		{
+			preValidation: isAuthenticated,
+			config: {
+				rateLimit: {
+					max: 20,
+					timeWindow: '1 minute',
+				},
+			},
+		},
 		getOwnedGames,
 	);
 	fastify.post(
@@ -32,13 +60,19 @@ export const steamRoutes = (fastify, _opts, done) => {
 					required: ['appIds'],
 				},
 			},
+			config: {
+				rateLimit: {
+					max: 5,
+					timeWindow: '1 minute',
+				},
+			},
 		},
 		getGamesInfo,
 	);
 
 	// TODO: Endpoint for resetting cache
 
-	const { redis } = fastify;
+	const { redis } = fastify as any;
 	const fs = require('fs');
 	const appIdsFile = './src/appids.json';
 	const allAppIds = JSON.parse(fs.readFileSync(appIdsFile, 'utf-8')).applist
