@@ -8,8 +8,6 @@ WORKDIR /app
 
 RUN pnpm install
 
-RUN ls -la /app/node_modules
-
 COPY . /app
 RUN pnpm build
 
