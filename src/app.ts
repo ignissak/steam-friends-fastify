@@ -175,6 +175,7 @@ async function build() {
 
 	const metricsPlugin = require('fastify-metrics');
 	await fastify.register(metricsPlugin, { endpoint: '/metrics' });
+	fastify.log.info('Metrics registered');
 
 	await routes(fastify);
 	fastify.log.info('Routes registered');
