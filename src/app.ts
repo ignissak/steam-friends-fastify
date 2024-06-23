@@ -174,7 +174,7 @@ async function build() {
 	fastify.log.info('Rate limit registered');
 
 	const metricsPlugin = require('fastify-metrics');
-	await fastify.register(metricsPlugin, { endpoint: '/metrics' });
+	await fastify.register(metricsPlugin, { endpoint: '/api/metrics' });
 	fastify.log.info('Metrics registered');
 
 	await routes(fastify);
