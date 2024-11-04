@@ -24,12 +24,6 @@ services:
     networks:
       - backend
       - dokploy-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.backend.entrypoints=websecure"
-      - "traefik.http.routers.backend.tls.certResolver=letsencrypt"
-      - "traefik.http.routers.backend.rule=Host(`steam.bordas.sk`)"
-      - "traefik.http.services.backend.loadbalancer.server.port=3000"
 volumes:
   cache:
     driver: local
