@@ -10,6 +10,7 @@ services:
     - cache:/data
     networks:
     - backend
+    - dokploy-network
   backend:
     image: 'steam-backend'
     build:
@@ -17,13 +18,21 @@ services:
       dockerfile: Dockerfile
       target: build-stage
     ports:
-    - 3000:3000
+    - 3000:3001
     depends_on:
     - cache
     networks:
       - backend
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.backend.rule=Host(`bordas.sk`) && PathPrefix(`/api`)"
+      - traefik.http.routers.steam-app-backend.entrypoints=web
+      - traefik.http.services.steam-app-backend.loadbalancer.server.port=3001
 volumes:
   cache:
     driver: local
 networks:
   backend:
+  dokploy-network:
+    external: true
