@@ -13,6 +13,7 @@ services:
     - dokploy-network
   backend:
     image: 'steam-backend'
+    platform: linux/x86_64
     build:
       context: .
       dockerfile: Dockerfile
