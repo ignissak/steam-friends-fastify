@@ -1,37 +1,37 @@
 services:
-  steamcache:
+  cache:
     image: redis:7.2.4-alpine
     restart: always
     ports:
-    - 36231:36231
+      - 36231:36231
     command: redis-server --loglevel notice --port 36231
     volumes:
-    - steamcache:/data
+      - cache:/data
     networks:
-    - backend
-    - dokploy-network
-  steambackend:
-    image: 'steam-backend'
+      - backend
+      - dokploy-network
+  backend:
+    image: "steam-backend"
     platform: linux/x86_64
     build:
       context: .
       dockerfile: Dockerfile
       target: build-stage
     ports:
-    - 3001:3000
+      - 3002:3000
     depends_on:
-    - steamcache
+      - cache
     networks:
       - backend
       - dokploy-network
     labels:
       - traefik.enable=true
-      - "traefik.http.routers.steambackend.rule=Host(`steam.bordas.sk`) && PathPrefix(`/api`)"
-      - traefik.http.routers.steambackend.entrypoints=web
-      - "traefik.http.routers.steambackend.tls.certResolver=letsencrypt"
-      - traefik.http.services.steambackend.loadbalancer.server.port=3000
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - traefik.http.routers.backend.entrypoints=web
+      - "traefik.http.routers.backend.tls.certResolver=letsencrypt"
+      - "traefik.http.services.backend.loadbalancer.server.port=3000"
 volumes:
-  steamcache:
+  cache:
     driver: local
 networks:
   backend:
