@@ -26,7 +26,7 @@ services:
       - dokploy-network
     labels:
       - traefik.enable=true
-      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.rule=Host(`steam.bordas.sk`) && PathPrefix(`/api`)"
       - traefik.http.routers.backend.entrypoints=web
       - "traefik.http.routers.backend.tls.certResolver=letsencrypt"
       - "traefik.http.services.backend.loadbalancer.server.port=3000"
