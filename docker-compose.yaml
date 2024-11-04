@@ -18,7 +18,7 @@ services:
       dockerfile: Dockerfile
       target: build-stage
     ports:
-    - 3000:3001
+    - 3001:3000
     depends_on:
     - cache
     networks:
