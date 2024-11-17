@@ -8,7 +8,8 @@ services:
     networks:
       - steam_bordas_backend
   backend:
-    image: "steam-backend"
+    image: ghcr.io/ignissak/steam-friends-fastify:main
+    container_name: steam-backend
     platform: linux/x86_64
     build:
       context: .
