@@ -65,7 +65,6 @@ async function build() {
 		process.env.NODE_ENV === 'production' ? '.env' : '.env.dev';
 
 	console.debug(`Loading config from ${dotenvPath}`);
-	console.debug(`${process.env.STEAM_AUTH_URL}`);
 
 	await fastify.register(fastifyEnv, {
 		dotenv: {
@@ -83,7 +82,7 @@ async function build() {
 				},
 				STEAM_API_KEY: {
 					type: 'string',
-					default: steamApiKey,
+					default: '',
 				},
 				STEAM_AUTH_URL: {
 					type: 'string',
@@ -95,7 +94,7 @@ async function build() {
 				},
 				JWT_SECRET: {
 					type: 'string',
-					default: jwtSecret,
+					default: '',
 				},
 				DEBUG: {
 					type: 'boolean',
