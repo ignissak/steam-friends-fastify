@@ -19,7 +19,7 @@ services:
     labels:
       - "traefik.enable=true"
       # HTTP router (for redirect)
-      - "traefik.http.routers.steam-backend.entrypoints=web"
+      - "traefik.http.routers.steam-backend.entrypoints=http"
       - "traefik.http.routers.steam-backend.rule=Host(`steam.bordas.sk`) && PathPrefix(`/api`)"
       - "traefik.http.routers.steam-backend.middlewares=redirect-to-https"
 
