@@ -1,4 +1,4 @@
-FROM --platform=linux/x86_64 node:lts-alpine as build-stage
+FROM node:lts-slim as build-stage
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
