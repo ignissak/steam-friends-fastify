@@ -64,15 +64,16 @@ async function build() {
 	const dotenvPath =
 		process.env.NODE_ENV === 'production' ? '.env' : '.env.dev';
 
+	console.debug(`Loading config from ${dotenvPath}`);
+	console.debug(`${process.env.STEAM_AUTH_URL}`);
+
 	const fs = require('fs');
 
 	const steamApiKey = fs
-		.readFileSync('/run/secrets/steam_api_key', 'utf8')
+		.readFileSync('/run/secrets/STEAM_API_KEY', 'utf8')
 		.trim();
-	const jwtSecret = fs.readFileSync('/run/secrets/jwt_secret', 'utf8').trim();
+	const jwtSecret = fs.readFileSync('/run/secrets/JWT_SECRET', 'utf8').trim();
 
-	console.debug(`Loading config from ${dotenvPath}`);
-	console.debug(`${process.env.STEAM_AUTH_URL}`);
 
 	await fastify.register(fastifyEnv, {
 		dotenv: {
