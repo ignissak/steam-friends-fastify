@@ -2,14 +2,11 @@ services:
   cache:
     image: redis:7.2.4-alpine
     restart: always
-    ports:
-      - 36231:36231
     command: redis-server --loglevel notice --port 36231
     volumes:
       - cache:/data
     networks:
-      - backend
-      - dokploy-network
+      - steam_bordas_backend
   backend:
     image: "steam-backend"
     platform: linux/x86_64
@@ -19,15 +16,27 @@ services:
       target: build-stage
     ports:
       - 3002:3000
+    labels:
+      - "traefik.enable=true"
+      # HTTP router (for redirect)
+      - "traefik.http.routers.steam-backend.entrypoints=web"
+      - "traefik.http.routers.steam-backend.rule=Host(`steam.bordas.sk`)"
+      - "traefik.http.routers.steam-backend.middlewares=redirect-to-https"
+
+      # HTTPS router
+      - "traefik.http.routers.steam-backend-secure.entrypoints=https"
+      - "traefik.http.routers.steam-backend-secure.rule=Host(`steam.bordas.sk`)"
+      - "traefik.http.routers.steam-backend-secure.tls=true"
+      - "traefik.http.routers.steam-backend-secure.tls.certresolver=le"
+      - "traefik.http.routers.steam-backend-secure.middlewares=sslheader"
+      - "traefik.http.routers.steam-backend-secure.service=steam-backend"
+      - "traefik.http.services.steam-backend.loadbalancer.server.port=3000"
     depends_on:
       - cache
     networks:
-      - backend
-      - dokploy-network
+      - steam_bordas_backend
 volumes:
   cache:
     driver: local
 networks:
-  backend:
-  dokploy-network:
-    external: true
+  steam_bordas_backend:
