@@ -64,6 +64,13 @@ async function build() {
 	const dotenvPath =
 		process.env.NODE_ENV === 'production' ? '.env' : '.env.dev';
 
+	const fs = require('fs');
+
+	const steamApiKey = fs
+		.readFileSync('/run/secrets/steam_api_key', 'utf8')
+		.trim();
+	const jwtSecret = fs.readFileSync('/run/secrets/jwt_secret', 'utf8').trim();
+
 	console.debug(`Loading config from ${dotenvPath}`);
 	console.debug(`${process.env.STEAM_AUTH_URL}`);
 
@@ -83,7 +90,7 @@ async function build() {
 				},
 				STEAM_API_KEY: {
 					type: 'string',
-					default: '',
+					default: steamApiKey,
 				},
 				STEAM_AUTH_URL: {
 					type: 'string',
@@ -95,7 +102,7 @@ async function build() {
 				},
 				JWT_SECRET: {
 					type: 'string',
-					default: '',
+					default: jwtSecret,
 				},
 				DEBUG: {
 					type: 'boolean',
