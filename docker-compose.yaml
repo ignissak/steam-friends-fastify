@@ -41,27 +41,12 @@ services:
     networks:
       - steam_bordas_backend
       - proxy
-    environment:
-      - PORT=3000
-      - NODE_ENV=production
-      - STEAM_AUTH_URL=https://steam.bordas.sk/api/auth/steam
-      - STEAM_RETURN_URL=https://steam.bordas.sk/api/auth/steam/return
-      - DEBUG=true
-      - COOKIE_DOMAIN=steam.bordas.sk
-      - REDIRECT_URL=https://steam.bordas.sk/login
-      - REDIS_URL="redis://cache:36231"
-    secrets:
-      - STEAM_API_KEY
-      - JWT_SECRET
+    env_file:
+      - .env
 volumes:
   cache:
     driver: local
 networks:
   steam_bordas_backend:
   proxy:
-    external: true
-secrets:
-  STEAM_API_KEY:
-    external: true
-  JWT_SECRET:
     external: true

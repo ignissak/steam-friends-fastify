@@ -67,14 +67,6 @@ async function build() {
 	console.debug(`Loading config from ${dotenvPath}`);
 	console.debug(`${process.env.STEAM_AUTH_URL}`);
 
-	const fs = require('fs');
-
-	const steamApiKey = fs
-		.readFileSync('/run/secrets/STEAM_API_KEY', 'utf8')
-		.trim();
-	const jwtSecret = fs.readFileSync('/run/secrets/JWT_SECRET', 'utf8').trim();
-
-
 	await fastify.register(fastifyEnv, {
 		dotenv: {
 			path: dotenvPath,
