@@ -30,13 +30,17 @@ services:
       - "traefik.http.routers.steam-backend-secure.tls.certresolver=le"
       - "traefik.http.routers.steam-backend-secure.middlewares=sslheader"
       - "traefik.http.routers.steam-backend-secure.service=steam-backend"
+      
       - "traefik.http.services.steam-backend.loadbalancer.server.port=3000"
     depends_on:
       - cache
     networks:
       - steam_bordas_backend
+      - proxy
 volumes:
   cache:
     driver: local
 networks:
   steam_bordas_backend:
+  proxy:
+    external: true
