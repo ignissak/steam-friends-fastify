@@ -20,12 +20,12 @@ services:
       - "traefik.enable=true"
       # HTTP router (for redirect)
       - "traefik.http.routers.steam-backend.entrypoints=web"
-      - "traefik.http.routers.steam-backend.rule=Host(`steam.bordas.sk`)"
+      - "traefik.http.routers.steam-backend.rule=Host(`steam.bordas.sk`) && PathPrefix(`/api`)"
       - "traefik.http.routers.steam-backend.middlewares=redirect-to-https"
 
       # HTTPS router
       - "traefik.http.routers.steam-backend-secure.entrypoints=https"
-      - "traefik.http.routers.steam-backend-secure.rule=Host(`steam.bordas.sk`)"
+      - "traefik.http.routers.steam-backend-secure.rule=Host(`steam.bordas.sk`) && PathPrefix(`/api`)"
       - "traefik.http.routers.steam-backend-secure.tls=true"
       - "traefik.http.routers.steam-backend-secure.tls.certresolver=le"
       - "traefik.http.routers.steam-backend-secure.middlewares=sslheader"
