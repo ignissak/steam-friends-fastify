@@ -38,3 +38,13 @@ jobs:
                   push: true
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
+                  build-args: |
+                    PORT=${{ secrets.PORT }}
+                    STEAM_API_KEY=${{ secrets.STEAM_API_KEY }}
+                    STEAM_AUTH_URL=${{ secrets.STEAM_AUTH_URL }}
+                    STEAM_RETURN_URL=${{ secrets.STEAM_RETURN_URL }}
+                    JWT_SECRET=${{ secrets.JWT_SECRET }}
+                    DEBUG=${{ secrets.DEBUG }}
+                    COOKIE_DOMAIN=${{ secrets.COOKIE_DOMAIN }}
+                    REDIRECT_URL=${{ secrets.REDIRECT_URL }}
+                    REDIS_URL=${{ secrets.REDIS_URL }}
