@@ -65,6 +65,7 @@ async function build() {
 		process.env.NODE_ENV === 'production' ? '.env' : '.env.dev';
 
 	console.debug(`Loading config from ${dotenvPath}`);
+	console.debug(`${process.env.STEAM_AUTH_URL}`);
 
 	await fastify.register(fastifyEnv, {
 		dotenv: {

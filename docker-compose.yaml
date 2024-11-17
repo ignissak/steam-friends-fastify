@@ -17,10 +17,9 @@ services:
       target: build-stage
     volumes:
       - ./.env:/app/.env
-    env_file:
-      - ./.env
     ports:
       - 3002:3000
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       # HTTP router (for redirect)
