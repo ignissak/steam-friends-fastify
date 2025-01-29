@@ -190,14 +190,14 @@ export const steamRoutes = (fastify: FastifyInstance, _opts, done) => {
 			});
 		} catch (e) {
 			if ((e as any).response.status === 401) {
-				return reply.status(401).send({
+				return reply.status(423).send({
 					success: false,
-					message: 'Friend list is private',
+					message: 'FRIEND_LIST_PRIVATE',
 				});
 			} else {
 				return reply.status(500).send({
 					success: false,
-					message: 'Internal server error',
+					message: 'INTERNAL_SERVER_ERROR',
 				});
 			}
 		}
